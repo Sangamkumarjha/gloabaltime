@@ -33,7 +33,7 @@ const AddMemberPage = () => {
       const response = await addMember({ email, password, sponsorId });
   console.log(response);
       if (response.success || response.status === "success") {
-        navigate("/");
+        navigate("/login");
       } else {
         setError(response.message || "Registration failed. Try again.");
       }

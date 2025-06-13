@@ -24,8 +24,32 @@ import LoginPage from "./components/layout/LoginPage";
 import AddMemberPage from "./components/layout/AddMemberPage";
 import PrivateRoute from "./components/PrivateRoute"; // Import this
 import Leveltest from "./pages/Level/Leveltest";
+import jwtDecode from "jwt-decode";
+
 
 function App() {
+
+
+const isTokenExpired = (token) => {
+  try {
+    const decoded = jwtDecode(token);
+    const currentTime = Date.now() / 1000; // in seconds
+    return decoded.exp < currentTime;
+  } catch (err) {
+    return true; // treat invalid token as expired
+  }
+};
+useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (!token || isTokenExpired(token)) {
+    // Remove user session and redirect to login
+    localStorage.removeItem("authToken");
+    navigate("/login");
+  }
+}, []);
+
+
   return (
     <div className="app min-h-screen">
       <BrowserRouter>
