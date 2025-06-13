@@ -9,7 +9,7 @@ import {
 } from "react-icons/fa";
 import DashboardController from "../controllers/DashboardController";
 import UserController from "../controllers/UserController";
-import DashboardCard from "../components/dashboard/DashBoardCard";
+import DashboardCard from "../components/dashboard/DashboardCard";
 import LinkCard from "../components/dashboard/LinkCard";
 import UserProfile from "../components/dashboard/UserProfile";
 import Leveltest from "./Level/Leveltest";
