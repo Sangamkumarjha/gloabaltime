@@ -24,8 +24,7 @@ import LoginPage from "./components/layout/LoginPage";
 import AddMemberPage from "./components/layout/AddMemberPage";
 import PrivateRoute from "./components/PrivateRoute"; // Import this
 import Leveltest from "./pages/Level/Leveltest";
-import jwtDecode from "jwt-decode";
-
+import {jwtDecode} from 'jwt-decode';
 
 function App() {
 
