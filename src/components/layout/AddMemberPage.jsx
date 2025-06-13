@@ -65,31 +65,46 @@ const AddMemberPage = () => {
 
           {/* Sponsor ID is not shown, only used internally */}
 
-          <div>
-            <label className="block text-gray-700 text-sm font-bold mb-1">Email</label>
-            <input
-              type="email"
-              placeholder="Your email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500"
-              disabled={isLoading}
-            />
-          </div>
+{/* Email */}
+<div className="relative">
+  <input
+    type="email"
+    id="email"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+    required
+    disabled={isLoading}
+    className="peer w-full appearance-none border border-gray-300 rounded-md bg-white px-4 pt-6 pb-2 text-sm text-gray-900 placeholder-transparent focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+    placeholder="Your email"
+  />
+  <label
+    htmlFor="email"
+    className="absolute left-4 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600"
+  >
+    Email
+  </label>
+</div>
 
-          <div>
-            <label className="block text-gray-700 text-sm font-bold mb-1">Password</label>
-            <input
-              type="password"
-              placeholder="Your password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500"
-              disabled={isLoading}
-            />
-          </div>
+{/* Password */}
+<div className="relative">
+  <input
+    type="password"
+    id="password"
+    required
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    disabled={isLoading}
+    placeholder=" "
+    className="peer w-full appearance-none border border-gray-300 rounded-md bg-white px-4 pt-6 pb-2 text-sm text-gray-900 placeholder-transparent focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+  />
+  <label
+    htmlFor="password"
+    className="absolute left-4 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600"
+  >
+    Password
+  </label>
+</div>
+
 
           {error && <div className="text-red-500 text-sm text-center">{error}</div>}
 
