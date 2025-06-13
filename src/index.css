@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+:root {
+  --primary-color: #146c7b;
+  --secondary-color: #1a6e7a;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #000000;
+  color: white;
+  margin: 0;
+  padding: 0;
+}
+
+.primary-button {
+  @apply bg-[#1d7e8c] text-white py-2 px-4 rounded-md hover:bg-[#1a6e7a] transition-colors;
+}
+
+.dashboard-card {
+  @apply bg-white text-black rounded-lg p-4 shadow-lg;
+}
+
+.card-value {
+  @apply bg-[#1d7e8c] text-white text-center py-2 px-4 rounded-md font-bold text-xl mt-2;
+}
