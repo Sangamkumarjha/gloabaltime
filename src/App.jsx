@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from "react";
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route, BrowserRouter,useNavigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import DownloadPlan from "./pages/DownloadPlan";
 import GlobaltimeDashboard from "./components/GloabletimeDasboard";
@@ -26,8 +26,9 @@ import PrivateRoute from "./components/PrivateRoute"; // Import this
 import Leveltest from "./pages/Level/Leveltest";
 import {jwtDecode} from 'jwt-decode';
 
-function App() {
 
+
+function App() {
 
 const isTokenExpired = (token) => {
   try {
@@ -38,15 +39,18 @@ const isTokenExpired = (token) => {
     return true; // treat invalid token as expired
   }
 };
-useEffect(() => {
-  const token = localStorage.getItem("token");
 
-  if (!token || isTokenExpired(token)) {
-    // Remove user session and redirect to login
-    localStorage.removeItem("authToken");
-    navigate("/login");
-  }
-}, []);
+// const navigate =useNavigate()
+
+// useEffect(() => {
+//   const token = localStorage.getItem("token");
+
+//   if (!token || isTokenExpired(token)) {
+//     // Remove user session and redirect to login
+//     localStorage.removeItem("authToken");
+//     navigate("/login");
+//   }
+// }, []);
 
 
   return (
