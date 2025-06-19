@@ -14,12 +14,36 @@ import LinkCard from "../components/dashboard/LinkCard";
 import UserProfile from "../components/dashboard/UserProfile";
 import Leveltest from "./Level/Leveltest";
 import LevelBronzeUpgrade from "./Level/levelMatrixUpgrade";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0); // ⬅️ Add this
   const [admin, setAdmin] = useState(false);
+
+  const isTokenExpired = (token) => {
+  try {
+    const decoded = jwtDecode(token);
+    const currentTime = Date.now() / 1000; // in seconds
+    return decoded.exp < currentTime;
+  } catch (err) {
+    return true; // treat invalid token as expired
+  }
+};
+
+const navigate =useNavigate();
+
+useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (!token || isTokenExpired(token)) {
+    // Remove user session and redirect to login
+    localStorage.removeItem("authToken");
+    navigate("/login");
+  }
+}, []);
 
 const fetchData = async () => {
   try {

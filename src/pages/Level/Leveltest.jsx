@@ -1,11 +1,19 @@
 import { useState, useEffect } from 'react';
 import DashboardController from '../../controllers/DashboardController';
 import { upgradeLevel } from '../../api/api';
+import { useNavigate } from 'react-router-dom';
 
 function Leveltest({ onUpgradeSuccess }) {
   const [dashboardData, setDashboardData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState(null);
+    const [showPopup, setShowPopup] = useState(false);
+  const navigate = useNavigate();
+
+  const handleConfirm = () => {
+    setShowPopup(false);
+    navigate('/recharge');
+  };
 
   // Fetch dashboard data
   const fetchData = async () => {
@@ -26,34 +34,36 @@ function Leveltest({ onUpgradeSuccess }) {
   const level = dashboardData?.levels?.latestLevel;
 
 const handleLevel = async () => {
-  setIsLoading(true);
-  setMessage(null);
+setShowPopup(true); 
+ 
+  // setIsLoading(true);
+  // setMessage(null);
 
-  try {
-    const response = await upgradeLevel(level);
+  // try {
+  //   const response = await upgradeLevel(level);
 
-    if (response?.status === "success") {
-      await fetchData();
-      onUpgradeSuccess?.(); // Notify dashboard
-      setMessage({
-        type: "success",
-        text: response.message || `Successfully upgraded to level ${level }!`,
-      });
-    } else {
-      // If API responds with status: 'failed'
-      throw new Error(response.message || "Upgrade failed.");
-    }
-  } catch (error) {
-    console.error("Error upgrading level:", error);
+  //   if (response?.status === "success") {
+  //     await fetchData();
+  //     onUpgradeSuccess?.(); // Notify dashboard
+  //     setMessage({
+  //       type: "success",
+  //       text: response.message || `Successfully upgraded to level ${level }!`,
+  //     });
+  //   } else {
+  //     // If API responds with status: 'failed'
+  //     throw new Error(response.message || "Upgrade failed.");
+  //   }
+  // } catch (error) {
+  //   console.error("Error upgrading level:", error);
 
-    // Show detailed message if backend returned it
-    const backendMessage =
-      error?.response?.data?.message || error.message || "Failed to upgrade level";
+  //   // Show detailed message if backend returned it
+  //   const backendMessage =
+  //     error?.response?.data?.message || error.message || "Failed to upgrade level";
 
-    setMessage({ type: "error", text: backendMessage });
-  } finally {
-    setIsLoading(false);
-  }
+  //   setMessage({ type: "error", text: backendMessage });
+  // } finally {
+  //   setIsLoading(false);
+  // }
 };
 
 
@@ -90,6 +100,32 @@ disabled={isLoading || level >= 9}
           `Upgrade To Level ${level }`
         )}
       </button>
+              {/* Popup */}
+        {showPopup && (
+          <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+            <div className="bg-white text-black p-6 rounded-lg w-80 space-y-4">
+              <h3 className="text-lg font-semibold text-center">Confirm Recharge</h3>
+              <p className="text-sm text-center">
+                Are you sure you have sent USDT to the address?
+              </p>
+              <div className="flex justify-center space-x-4 pt-2">
+                <button
+                  className="bg-gray-300 hover:bg-gray-400 px-4 py-1 rounded"
+                  onClick={() => setShowPopup(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded"
+                  onClick={handleConfirm}
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+ 
       {message && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="absolute inset-0 backdrop-blur-md bg-black bg-opacity-30"></div>
