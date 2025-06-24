@@ -33,8 +33,8 @@ const Header = () => {
         <div className="flex-1 flex justify-center">
           {/* Show full text on medium and up, only "Global Time" on small */}
           <h1 className="text-white text-xl sm:text-2xl font-bold text-center">
-            <span className="block sm:hidden">Global Time</span>
-            <span className="hidden sm:block">Welcome to Trone Globaltime</span>
+            <span className="block sm:hidden">GlobalTime</span>
+            <span className="hidden sm:block">TronGlobalTime.com</span>
           </h1>
         </div>
 

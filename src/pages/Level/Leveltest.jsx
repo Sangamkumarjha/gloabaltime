@@ -106,7 +106,7 @@ disabled={isLoading || level >= 9}
             <div className="bg-white text-black p-6 rounded-lg w-80 space-y-4">
               <h3 className="text-lg font-semibold text-center">Confirm Recharge</h3>
               <p className="text-sm text-center">
-                Are you sure you have sent USDT to the address?
+                Are you sure you have sent TRX to the address?
               </p>
               <div className="flex justify-center space-x-4 pt-2">
                 <button

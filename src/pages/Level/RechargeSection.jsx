@@ -12,11 +12,11 @@ const RechargeSection = () => {
             <h2 className="text-lg font-semibold">Select Mainnet</h2>
             <div className="flex items-center space-x-2">
               <img
-                src="https://cryptologos.cc/logos/tether-usdt-logo.png" // Or use your own icon
-                alt="USDT"
+                src="https://cryptologos.cc/logos/tether-trx-logo.png" // Or use your own icon
+                alt="TRX"
                 className="w-8 h-8"
               />
-              <span className="text-white font-medium">USDT</span>
+              <span className="text-white font-medium">TRX</span>
             </div>
             <div className="w-40 h-40 bg-white p-2 rounded">
               <img
@@ -43,8 +43,8 @@ const RechargeSection = () => {
             Recharge Complete
           </button>
           <div className="text-sm text-gray-300 text-center space-y-1">
-            <p>1. Copy the address above or scan the QR code and select USDT (BEP20) network to deposit USDT</p>
-            <p>2. Please do not recharge other non-USDT(BEP20)-USDT assets.</p>
+            <p>1. Copy the address above or scan the QR code and select TRX network to deposit TRX</p>
+            <p>2. Please do not recharge other non-TRX or trx Assets .</p>
             <p>3. If it does not arrive for a long time, refresh the page or contact customer service.</p>
           </div>
         </div>
