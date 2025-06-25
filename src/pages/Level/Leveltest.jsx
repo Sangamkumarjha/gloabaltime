@@ -1,21 +1,30 @@
 import { useState, useEffect } from 'react';
 import DashboardController from '../../controllers/DashboardController';
-import { upgradeLevel } from '../../api/api';
+import { confirmTransaction, upgradeLevel } from '../../api/api';
 import { useNavigate } from 'react-router-dom';
 
 function Leveltest({ onUpgradeSuccess }) {
   const [dashboardData, setDashboardData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState(null);
-    const [showPopup, setShowPopup] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [pendingUpgradeLevel, setPendingUpgradeLevel] = useState(null);
   const navigate = useNavigate();
 
-  const handleConfirm = () => {
-    setShowPopup(false);
-    navigate('/recharge');
+  // ✅ Define TRX requirement per level
+  const levelToTrxMap = {
+    1: 5,
+    2: 10,
+    3: 20,
+    4: 60,     // Bronze
+    5: 200,    // Silver
+    6: 500,    // Gold
+    7: 2000,   // Platinum
+    8: 4000,   // Diamond
+    9: 10000,  // Blue Diamond
   };
 
-  // Fetch dashboard data
+  // ✅ Fetch user dashboard data
   const fetchData = async () => {
     try {
       const data = await DashboardController.getDashboardData();
@@ -31,46 +40,31 @@ function Leveltest({ onUpgradeSuccess }) {
     fetchData();
   }, []);
 
-  const level = dashboardData?.levels?.latestLevel;
+  const currentLevel = dashboardData?.levels?.latestLevel1 || 1;
+  const nextLevel = currentLevel + 1;
+  const trxRequired = pendingUpgradeLevel ? levelToTrxMap[pendingUpgradeLevel] : levelToTrxMap[nextLevel];
 
-const handleLevel = async () => {
-setShowPopup(true); 
- 
-  // setIsLoading(true);
-  // setMessage(null);
+  // ✅ Trigger popup & store target level on click
+  const handleLevel = () => {
+    const upgradeTarget = currentLevel + 1;
+    setPendingUpgradeLevel(upgradeTarget);
+    setShowPopup(true);
+    console.log("Upgrade clicked — currentLevel:", currentLevel, "→ upgrade to:", upgradeTarget);
+  };
 
-  // try {
-  //   const response = await upgradeLevel(level);
-
-  //   if (response?.status === "success") {
-  //     await fetchData();
-  //     onUpgradeSuccess?.(); // Notify dashboard
-  //     setMessage({
-  //       type: "success",
-  //       text: response.message || `Successfully upgraded to level ${level }!`,
-  //     });
-  //   } else {
-  //     // If API responds with status: 'failed'
-  //     throw new Error(response.message || "Upgrade failed.");
-  //   }
-  // } catch (error) {
-  //   console.error("Error upgrading level:", error);
-
-  //   // Show detailed message if backend returned it
-  //   const backendMessage =
-  //     error?.response?.data?.message || error.message || "Failed to upgrade level";
-
-  //   setMessage({ type: "error", text: backendMessage });
-  // } finally {
-  //   setIsLoading(false);
-  // }
-};
-
+  const handleConfirm =async () => {
+    const result =await confirmTransaction(trxRequired)
+    console.log('result=====', result)
+    setShowPopup(false);
+    setPendingUpgradeLevel(null); // Reset pending after action
+    navigate('/recharge');
+  };
 
   const handleCloseMessage = () => {
     setMessage(null);
   };
 
+  // ✅ Show loading spinner while fetching
   if (!dashboardData) {
     return (
       <div className="flex justify-center items-center ">
@@ -81,11 +75,13 @@ setShowPopup(true);
 
   return (
     <div className={`flex flex-col items-center justify-center transition-all duration-300 ${message ? 'backdrop-blur-sm' : ''}`}>
+      
+      {/* ✅ Upgrade Button */}
       <button
         onClick={handleLevel}
-disabled={isLoading || level >= 9}
+        disabled={isLoading || currentLevel >= 9}
         className={`relative text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl ${
-          isLoading || level >= 9  ? 'pointer-events-none' : 'hover:pointer'
+          isLoading || currentLevel >= 9 ? 'pointer-events-none' : 'hover:pointer'
         }`}
       >
         {isLoading ? (
@@ -97,35 +93,40 @@ disabled={isLoading || level >= 9}
             Upgrading...
           </div>
         ) : (
-          `Upgrade To Level ${level }`
+          `Upgrade To Level ${nextLevel}`
         )}
       </button>
-              {/* Popup */}
-        {showPopup && (
-          <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-            <div className="bg-white text-black p-6 rounded-lg w-80 space-y-4">
-              <h3 className="text-lg font-semibold text-center">Confirm Recharge</h3>
-              <p className="text-sm text-center">
-                Are you sure you have sent TRX to the address?
-              </p>
-              <div className="flex justify-center space-x-4 pt-2">
-                <button
-                  className="bg-gray-300 hover:bg-gray-400 px-4 py-1 rounded"
-                  onClick={() => setShowPopup(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded"
-                  onClick={handleConfirm}
-                >
-                  Confirm
-                </button>
-              </div>
+
+      {/* ✅ Confirmation Popup */}
+      {showPopup && pendingUpgradeLevel && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className="bg-white text-black p-6 rounded-lg w-80 space-y-4">
+            <h3 className="text-lg font-semibold text-center">Confirm Recharge</h3>
+            <p className="text-sm text-center">
+              Are you sure you want to upgrade to Level {pendingUpgradeLevel} by sending <span className="font-bold">{trxRequired} TRX</span>?
+            </p>
+            <div className="flex justify-center space-x-4 pt-2">
+              <button
+                className="bg-gray-300 hover:bg-gray-400 px-4 py-1 rounded"
+                onClick={() => {
+                  setShowPopup(false);
+                  setPendingUpgradeLevel(null);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded"
+                onClick={handleConfirm}
+              >
+                Confirm
+              </button>
             </div>
           </div>
-        )}
- 
+        </div>
+      )}
+
+      {/* ✅ Message Box */}
       {message && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="absolute inset-0 backdrop-blur-md bg-black bg-opacity-30"></div>

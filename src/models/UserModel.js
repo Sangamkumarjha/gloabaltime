@@ -28,7 +28,7 @@ localStorage.setItem("UserID",UserID);
 
       name: data.userData.email || 'User Name',
       totalUsers: data.userData.totalUsersUnder,
-      currentLevel: data.userData.level || 5000,
+      currentLevel: data.userData.level ,
       currentMatrix: data.userData.package || 'Not Eligible',
       directAssociates: data.userData.directAssociates || 31,
       latestLevel: {

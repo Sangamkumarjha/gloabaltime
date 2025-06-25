@@ -1,6 +1,8 @@
 import axios from "axios";
+import { parseUnits, formatUnits } from "viem/utils";
 
-const API = "https://gloablcalc.onrender.com/api/v1/globaltime";
+const API = "https://gloablcalc-uc5h.onrender.com/api/v1/globaltime";
+const BLOCKHAINAPI = "https://gloablcalc-uc5h.onrender.com/api/v1/globaltime";
 
 export const login = async (Credential) => {
   try {
@@ -33,7 +35,6 @@ export const addMember = async ({ email, password, sponsorId }) => {
     throw error.response?.data || { message: "Unknown error occurred" };
   }
 };
-
 
 export const getUserProfile = async () => {
   const token = localStorage.getItem("token");
@@ -90,8 +91,8 @@ export const getUserChildren = async (userId) => {
   }
 };
 
-export const upgradeLevel=async(level1)=>{
-      const token = localStorage.getItem("token");
+export const upgradeLevel = async (level1) => {
+  const token = localStorage.getItem("token");
 
   if (!token) {
     throw new Error("No token found");
@@ -100,17 +101,16 @@ export const upgradeLevel=async(level1)=>{
     throw new Error("No user ID provided");
   }
   try {
- const response=await fetch(`${API}/upgrade/user?level=${level1}`,
-   { method:'PUT',
-    headers:{
-        "Content-type":"Application/json",
-        Authorization:`${token}`
-    }
-   }
- );
-const data=await response.json();
+    const response = await fetch(`${API}/upgrade/user?level=${level1}`, {
+      method: "PUT",
+      headers: {
+        "Content-type": "Application/json",
+        Authorization: `${token}`,
+      },
+    });
+    const data = await response.json();
 
-     if (!response.ok) {
+    if (!response.ok) {
       throw new Error(data.message || "Upgrade failed.");
     }
 
@@ -119,32 +119,58 @@ const data=await response.json();
     console.error("Error fetching user children:", error);
     throw error;
   }
-}
+};
 
-export const upgradeBronzLevel=async(pack)=>{
-      const token = localStorage.getItem("token");
+export const upgradeBronzLevel = async (pack) => {
+  const token = localStorage.getItem("token");
 
   if (!token) {
     throw new Error("No token found");
   }
 
   try {
- const response=await fetch(`${API}/upgrade/user?level=${pack}`,
-   { method:'PUT',
-    headers:{
-        "Content-type":"Application/json",
-        Authorization:`${token}`
-    }
-   }
- );
- const data =await response.json();
-     if (!response.ok) {
+    const response = await fetch(`${API}/upgrade/user?level=${pack}`, {
+      method: "PUT",
+      headers: {
+        "Content-type": "Application/json",
+        Authorization: `${token}`,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok) {
       throw new Error(data.message || "Upgrade failed.");
     }
 
-    return data
+    return data;
   } catch (error) {
     console.error("Error fetching user children:", error);
     throw error;
   }
-}
+};
+
+export const confirmTransaction = async (amount) => {
+  const fiveTrxInSun = parseUnits(amount.toString(), 6); // amount like "5" → 5000000n
+  console.log("Parsed TRX in sun:", fiveTrxInSun);
+
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found");
+  }
+
+  try {
+    const response = await fetch(`${BLOCKHAINAPI}/transaction/deposit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+      body: JSON.stringify({ amountInWei: fiveTrxInSun.toString() }), // ✅ BigInt to string
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error confirming transaction:", error);
+    throw new Error("Failed to confirm transaction");
+  }
+};

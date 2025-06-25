@@ -20,7 +20,7 @@ const RechargeSection = () => {
             </div>
             <div className="w-40 h-40 bg-white p-2 rounded">
               <img
-                src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0xt227...705a"
+                src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=sangam"
                 alt="QR Code"
                 className="w-full h-full"
               />
