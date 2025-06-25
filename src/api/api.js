@@ -149,28 +149,73 @@ export const upgradeBronzLevel = async (pack) => {
 };
 
 export const confirmTransaction = async (amount) => {
-  const fiveTrxInSun = parseUnits(amount.toString(), 6); // amount like "5" → 5000000n
-  console.log("Parsed TRX in sun:", fiveTrxInSun);
-
-  const token = localStorage.getItem("token");
-  if (!token) {
-    throw new Error("No token found");
+  if (!amount || isNaN(amount) || Number(amount) <= 0) {
+    throw new Error("Invalid amount. Must be a positive number.");
   }
+
+  const amountInSun = parseUnits(amount.toString(), 6); // 💡 "6" = decimals for TRX
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("No token found");
 
   try {
     const response = await fetch(`${BLOCKHAINAPI}/transaction/deposit`, {
       method: "POST",
       headers: {
+        "Content-type": "application/json",
+        Authorization: `${token}`,
+      },
+      body: JSON.stringify({ amount: amountInSun.toString() }), // ✅ wrap it in object
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("confirmTransaction error:", error);
+    throw error;
+  }
+};
+
+
+// api.js
+export const ConfirmRecharge = async (txId, level) => {
+  const token = localStorage.getItem('token');
+  try {
+    const response = await fetch(`${API}/transaction/deposit/confirmed?txId=${txId}&level%20=level${level}`, {
+      method: "POST",
+      headers: {
         "Content-Type": "application/json",
         Authorization: `${token}`,
       },
-      body: JSON.stringify({ amountInWei: fiveTrxInSun.toString() }), // ✅ BigInt to string
     });
 
-    const data = await response.json();
-    return data;
+    if (!response.ok) {
+      throw new Error("Recharge confirmation (level) failed");
+    }
+
+    return await response.json();
   } catch (error) {
-    console.error("Error confirming transaction:", error);
-    throw new Error("Failed to confirm transaction");
+    console.error("ConfirmRecharge error:", error);
+    throw error;
+  }
+};
+
+// api.js
+export const ConfirmRechargePack = async (txId, pack) => {
+  const token = localStorage.getItem('token');
+  try {
+    const response = await fetch(`${API}/transaction/deposit/confirmed?txId=${txId}&pack=${encodeURIComponent(pack)}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Recharge confirmation (pack) failed");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("ConfirmRechargePack error:", error);
+    throw error;
   }
 };

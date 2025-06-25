@@ -12,7 +12,7 @@ const UserProfile = ({ userData }) => {
       </div>
       <div className="ml-4">
         <h2 className="text-2xl font-bold">Hello {userData.name}</h2>
-        <p className="text-gray-300">({userData.id})</p>
+        <p className="text-gray-300">({userData.address})</p>
         <p className="text-gray-300">It is good to see you again!</p>
       </div>
     </div>

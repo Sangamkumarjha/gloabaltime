@@ -12,7 +12,9 @@ class DashboardController {
           id: userData.id,
           name: userData.name,
           userType:userData.userType,
-          adminIncome:userData.adminIncome
+          adminIncome:userData.adminIncome,
+                    address:userData.address,
+
         },
         stats: {
           totalUsers: userData.totalUsers,
@@ -26,6 +28,7 @@ class DashboardController {
           buyMatrix: userData.buyMatrix,
         },
         wallet: {
+          address:userData.address,
           referralIncome: userData.referralIncome,
           sponsorIncome: userData.sponsorIncome,
           levelCommunity: userData.levelCommunity,
